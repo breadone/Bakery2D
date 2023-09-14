@@ -17,14 +17,14 @@ public:
     C2D_SpriteSheet spritesheet;
     C3D_RenderTarget* top;
     C3D_RenderTarget* bottom;
-    void (*setup)(Level*);
-    void (*update)(Level*);
+    Level* level;
     bool hasBeenSetup = false;
 
-    Level(char* spritesheetPath, void(*setup)(Level*), void(*update)(Level*)) {
-        this->setup = setup;
-        this->update = update;
+    virtual void setup() = 0;
+    virtual void update() = 0;
 
+    template <typename T>
+    Level(T* levelName, char* spritesheetPath) : level(levelName) {
         this->spritesheet = C2D_SpriteSheetLoad(spritesheetPath);
         size_t numImages = C2D_SpriteSheetCount(spritesheet);
 
@@ -37,9 +37,6 @@ public:
             C2D_SpriteSetCenter(&thisSprite->spr, 0.5f, 0.5f);
             thisSprite->setPosition(x, y);
         }
-
-        // SPRITE 0 MUST BE THE BG
-
     }
 
     void setRenderTargets(C3D_RenderTarget* top, C3D_RenderTarget* bottom) {
@@ -50,20 +47,33 @@ public:
     // sets up the level if it hasnt been, then updates the frame
     void run() {
         if (!hasBeenSetup) {
-            this->setup(this);
+            level->setup(this);
             this->hasBeenSetup = true;
         }
-        this->update(this);
+        level->update(this);
     }
 };
 
-void setupIntroLevel(Level* level) {
+class MainLevel: public Level {
+    C2D_SpriteSheet spritesheet;
+    int score = 0;
 
-}
-void updateIntroLevel(Level* level) {
+    MainLevel(): Level(this, "romfs:/gfx/sprites.t3x") {}
 
+    void setup() {
+        printf("welcome to gaming\n");
+    }
+
+    void update() {
+        score++;
+    }
 }
-Level *introLevel = new Level("romfs:/gfx/introLevel/sprites.t3x", &setupIntroLevel, &updateIntroLevel);
+
+// Level *level;
+
+// void changeLevel(Level* newLevel) {
+//     level = newLevel;
+// }
 
 int main(int argc, char** argv) {
     romfsInit();
@@ -75,9 +85,9 @@ int main(int argc, char** argv) {
     C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     C3D_RenderTarget* bottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    Level *level;
+    
 
-    level = introLevel;
+    level = MainLevel();
     level->setRenderTargets(top, bottom);
 
     while (aptMainLoop()) {
