@@ -54,7 +54,7 @@ public:
     }
 };
 
-class MainLevel: public Level {
+struct MainLevel: public Level {
     C2D_SpriteSheet spritesheet;
     int score = 0;
 

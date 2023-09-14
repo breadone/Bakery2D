@@ -49,8 +49,7 @@ public:
     }
 };
 
-class WinScreen: public Level {
-public:
+struct WinScreen: Level {
     WinScreen(): Level(this, "romfs:/gfx/sprites.t3x") {}
 
     void setup() {}
