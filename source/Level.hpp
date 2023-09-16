@@ -9,7 +9,7 @@
 #define LEVEL_HPP
 
 #include <citro2d.h>
-#include "../Sprite/Sprite.hpp"
+#include "Sprite.hpp"
 
 #define SCREEN_WIDTH  400
 #define SCREEN_HEIGHT 240
@@ -64,8 +64,7 @@ public:
     virtual void drawTop() = 0;
     virtual void drawBottom() = 0;
 
-    template <typename T>
-    Level(T* levelName, char* spritesheetPath, C3D_RenderTarget* top, C3D_RenderTarget* bottom);
+    Level(Level* levelName, char* spritesheetPath, C3D_RenderTarget* top, C3D_RenderTarget* bottom);
 
     // sets up the level if it hasnt been, then updates the logic, and draws the frame
     void run();
