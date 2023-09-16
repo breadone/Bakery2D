@@ -8,7 +8,7 @@
 #ifndef LEVEL_HPP
 #define LEVEL_HPP
 
-#include <citro2d.h>
+// #include <citro2d.h>
 #include "Sprite.hpp"
 
 #define SCREEN_WIDTH  400
@@ -58,17 +58,25 @@ public:
     C3D_RenderTarget* bottom;
     Level* level;
     bool hasBeenSetup = false;
+    bool isActive = true;
 
     virtual void setup() = 0;
     virtual void update() = 0;
     virtual void drawTop() = 0;
     virtual void drawBottom() = 0;
 
+    
     Level(Level* levelName, char* spritesheetPath, C3D_RenderTarget* top, C3D_RenderTarget* bottom);
 
     // sets up the level if it hasnt been, then updates the logic, and draws the frame
     void run();
 
-    virtual void cleanup();
+    // stops the current level, mostly to be used to exit to hbmenu (see examples)
+    void exit();
+
+    // returns the status of the level, whether it's been exited or not
+    bool active(); 
+
+    virtual void cleanup() = 0;
 };
 #endif  
